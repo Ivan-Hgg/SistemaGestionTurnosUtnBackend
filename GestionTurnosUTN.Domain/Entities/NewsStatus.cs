@@ -9,7 +9,7 @@ namespace GestionTurnosUTN.Domain.Entities
     public enum NewsStatus
     {
         PENDING,
-        POSTED,
-        DELETED
+        POSTED/*, No es necesario por el isActive
+        DELETED*/
     }
 }

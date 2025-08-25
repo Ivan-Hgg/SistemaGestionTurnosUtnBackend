@@ -8,9 +8,9 @@ namespace GestionTurnosUTN.Domain.Entities;
 
 public class EntityBase
 {
-    Guid ID { get; set; }
+    public Guid Id { get; set; }
     public EntityBase()
     {
-        ID = Guid.NewGuid();
+        Id = Guid.NewGuid();
     }
 }

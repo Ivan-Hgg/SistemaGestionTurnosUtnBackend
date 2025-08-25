@@ -11,7 +11,6 @@ public class Turn: EntityBase
     public DateTime Date { get; set; }
     public DateTime? DateAttended { get; set; }
     public TurnStatus Status { get; set; }
-    public Guid Id { get; set; }
     // Navigation properties
     public Guid IntervalId { get; set; }
     public Interval? Interval { get; set; }

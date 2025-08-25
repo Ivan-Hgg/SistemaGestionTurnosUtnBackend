@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace GestionTurnosUTN.Domain.Entities;
 public class Student : EntityBase
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public string InstitutionalEmail { get; set; }
     public int Legajo { get; set; }

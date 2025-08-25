@@ -10,6 +10,16 @@ namespace GestionTurnosUTN.Data;
 
 public class GestionTurnosUTNDomainContext : DbContext
 {
+    public DbSet<Interval> Intervals { get; set; }
+    public DbSet<Note> Notes { get; set; }
+    public DbSet<Student> Students { get; set; }
+    public DbSet<Turn> Turns { get; set; }
+    public DbSet<Worker> Workers { get; set; }
+    public DbSet<News> News { get; set; }
+    public GestionTurnosUTNDomainContext(DbContextOptions<GestionTurnosUTNDomainContext> options) : base(options)
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -36,7 +46,7 @@ public class GestionTurnosUTNDomainContext : DbContext
                 eb.HasMany(i => i.Notes)
                     .WithMany(n => n.Intervals);
             }
-            );
+        );
         modelBuilder.Entity<Note>(eb => 
             {
                 eb.ToTable("Notes");

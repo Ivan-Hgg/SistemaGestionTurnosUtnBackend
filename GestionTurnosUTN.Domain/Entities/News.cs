@@ -8,7 +8,6 @@ namespace GestionTurnosUTN.Domain.Entities;
 
 public class News: EntityBase
 {
-    public Guid Id { get; set; }
     public string Title { get; set; }
     public string Description{ get; set; }
     public DateTime DatePost { get; set; }

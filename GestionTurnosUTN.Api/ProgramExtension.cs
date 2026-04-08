@@ -15,4 +15,11 @@ public static class ProgramExtension
         );
         return services;
     }
+    public static IServiceCollection AddDomainServices(this IServiceCollection services)
+    {
+        // Aquí puedes agregar tus servicios de dominio, por ejemplo:
+        // services.AddScoped<IMiServicioDeDominio, MiServicioDeDominio>();
+        
+        return services;
+    }
 }

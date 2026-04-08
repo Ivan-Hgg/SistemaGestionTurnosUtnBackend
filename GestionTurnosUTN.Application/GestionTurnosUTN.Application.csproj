@@ -11,4 +11,10 @@
     <ProjectReference Include="..\GestionTurnosUTN.Domain\GestionTurnosUTN.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+    <Folder Include="Interfaces\" />
+    <Folder Include="Validation\" />
+  </ItemGroup>
+
 </Project>

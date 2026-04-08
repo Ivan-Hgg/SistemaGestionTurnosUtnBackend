@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\GestionTurnosUTN.Application\GestionTurnosUTN.Application.csproj" />
     <ProjectReference Include="..\GestionTurnosUTN.Data\GestionTurnosUTN.Data.csproj" />
   </ItemGroup>

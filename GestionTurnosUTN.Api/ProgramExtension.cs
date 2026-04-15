@@ -1,4 +1,6 @@
 ﻿using Dsw2025Tpi.Data.Repositories;
+using GestionTurnosUTN.Application.Interfaces;
+using GestionTurnosUTN.Application.Services;
 using GestionTurnosUTN.Data;
 using GestionTurnosUTN.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -17,9 +19,11 @@ public static class ProgramExtension
     }
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
+        services.AddScoped<INewsService, NewsManagementService>(); // Carlos: Agrego el servicio de gestión de noticias a la inyección de dependencias
+        services.AddScoped<ITurnManagementService, TurnManagementService>();
         // Aquí puedes agregar tus servicios de dominio, por ejemplo:
         // services.AddScoped<IMiServicioDeDominio, MiServicioDeDominio>();
-        
+
         return services;
     }
 }

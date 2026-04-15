@@ -1,4 +1,5 @@
 
+using Dsw2025Tpi.Api.MiddleareCustoms;
 using GestionTurnosUTN.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -69,6 +70,7 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+        app.UseMiddleware<ExceptionHandlerCustom>();
 
         app.UseHttpsRedirection();
 

@@ -7,12 +7,28 @@ using System.Threading.Tasks;
 
 namespace GestionTurnosUTN.Application.Dtos;
 
-public class TurnModelRequest(
-    string SecurityCode,
-    DateTime Date,
-    TurnStatus Status,
-    Guid IntervalId,
-    Guid StudentId,
-    Guid NoteId
-);
+public record TurnModel
+{
+    public record Request(
+        string SecurityCode,
+        DateTime Date,
+        TurnStatus Status,
+        Guid IntervalId,
+        Guid StudentId,
+        Guid NoteId
+    );
+    public record Response(
+        Guid Id,
+        string SecurityCode,
+        DateTime Date,
+        TurnStatus Status,
+        Guid IntervalId,
+        Guid StudentId,
+        Guid NoteId
+    );
+
+
+}
+
+    
 

@@ -12,7 +12,10 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <Folder Include="Exceptions\" />
+=======
+>>>>>>> turnService
     <Folder Include="Validation\" />
   </ItemGroup>
 

@@ -18,8 +18,8 @@ public class Interval:EntityBase
     //Relationships
     public Guid? WorkerId { get; set; }
     public Worker? Worker { get; set; }
-    public IEnumerable<Turn>? Turns { get; set; }
-    public IEnumerable<Note> Notes { get; set; }
+    public ICollection<Turn>? Turns { get; set; }
+    public ICollection<Note> Notes { get; set; }
 
 
     public Interval()
@@ -28,7 +28,7 @@ public class Interval:EntityBase
         ExplainDesactivation = string.Empty;
         Notes = [];
     }
-    public Interval(string name, string description, DateTime dateStart, DateTime dateEnd, Guid workerId, IEnumerable<Note> notes)
+    public Interval(string name, string description, DateTime dateStart, DateTime dateEnd, Guid workerId, ICollection<Note> notes)
     {
         Name = name;
         Description = description;

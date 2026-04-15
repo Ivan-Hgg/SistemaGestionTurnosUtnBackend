@@ -10,9 +10,7 @@ namespace GestionTurnosUTN.Application.Dtos;
 public record TurnModel
 {
     public record Request(
-        string SecurityCode,
         DateTime Date,
-        TurnStatus Status,
         Guid IntervalId,
         Guid StudentId,
         Guid NoteId

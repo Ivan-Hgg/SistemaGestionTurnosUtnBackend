@@ -11,8 +11,8 @@ public class Note: EntityBase
     // Navigation properties
     public Guid? WorkerId { get; set; }
     public Worker? Worker { get; set; }
-    public IEnumerable<Turn>? Turns { get; set; }
-    public IEnumerable<Interval>? Intervals { get; set; }
+    public ICollection<Turn>? Turns { get; set; }
+    public ICollection<Interval>? Intervals { get; set; }
 
     public Note()
     {

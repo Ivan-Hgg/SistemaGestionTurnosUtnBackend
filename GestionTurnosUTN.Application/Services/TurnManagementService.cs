@@ -17,7 +17,15 @@ public class TurnManagementService : ITurnManagementService
 
     public async Task<TurnModel.Response> CreateTurnAsync(TurnModel.Request request)
     {
-       
+       return new TurnModel.Response(
+            Guid.NewGuid(),
+            request.SecurityCode,
+            request.Date,
+            request.Status,
+            request.IntervalId,
+            request.StudentId,
+            request.NoteId
+        );
     }
 
 }

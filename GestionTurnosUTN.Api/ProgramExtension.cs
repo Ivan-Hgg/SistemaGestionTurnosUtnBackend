@@ -19,11 +19,8 @@ public static class ProgramExtension
     }
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
-<<<<<<< HEAD
         services.AddScoped<INewsService, NewsManagementService>(); // Carlos: Agrego el servicio de gestión de noticias a la inyección de dependencias
-=======
         services.AddScoped<ITurnManagementService, TurnManagementService>();
->>>>>>> turnService
         // Aquí puedes agregar tus servicios de dominio, por ejemplo:
         // services.AddScoped<IMiServicioDeDominio, MiServicioDeDominio>();
 

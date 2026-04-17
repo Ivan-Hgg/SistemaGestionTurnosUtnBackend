@@ -13,16 +13,17 @@ public class TurnController : ControllerBase
     {
         _turnService = turnService;
     }
-
-    [HttpGet]
-    public IActionResult Get()
-    {
-        return Ok("Hello World");
-    }
     [HttpPost]
     public async Task<IActionResult> AddTurn([FromBody] TurnModel.Request request)
     {
         var newTurn= await _turnService.CreateTurnAsync(request);
         return Ok(newTurn);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> CancelTurn([FromBody] TurnModel.CancelRequest request)
+    {
+        await _turnService.CancelTurnAsync(request);
+        return Ok();
     }
 }

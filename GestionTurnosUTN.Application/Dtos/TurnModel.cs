@@ -19,11 +19,13 @@ public record TurnModel
         Guid Id,
         string SecurityCode,
         DateTime Date,
-        TurnStatus Status,
+        string Status,
         Guid IntervalId,
         Guid StudentId,
         Guid NoteId
     );
+
+    public record CancelRequest(Guid Id);
 
 
 }

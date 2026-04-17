@@ -12,7 +12,7 @@ public class Interval:EntityBase
     public string? Description{ get; set; }
     public DateTime DateStart { get; set; }
     public DateTime DateEnd { get; set; }
-    //public int TurnQuantity{ get; set; }
+    public float TimePerTurn{ get; set; }
     public Boolean IsActive { get; set; }
     public string? ExplainDesactivation { get; set; }
     //Relationships

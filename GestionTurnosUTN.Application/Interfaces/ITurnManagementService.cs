@@ -11,4 +11,5 @@ namespace GestionTurnosUTN.Application.Interfaces;
 public interface ITurnManagementService
 {
      Task<TurnModel.Response> CreateTurnAsync(TurnModel.Request request);
+     Task CancelTurnAsync(TurnModel.CancelRequest request);
 }

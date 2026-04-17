@@ -4,6 +4,7 @@ using GestionTurnosUTN.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionTurnosUTN.Data.Migrations
 {
     [DbContext(typeof(GestionTurnosUTNDomainContext))]
-    partial class GestionTurnosUTNDomainContextModelSnapshot : ModelSnapshot
+    [Migration("20260417213800_TimePerTurn")]
+    partial class TimePerTurn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

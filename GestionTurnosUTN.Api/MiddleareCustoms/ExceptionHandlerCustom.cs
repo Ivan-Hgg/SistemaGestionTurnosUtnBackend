@@ -39,6 +39,7 @@ public class ExceptionHandlerCustom
             DuplicatedEntityException=> HttpStatusCode.Conflict,
             InvalidStatusTransitionException=>HttpStatusCode.BadRequest,
             DataInsertException=>HttpStatusCode.BadRequest,
+            InvalidOperationException=> HttpStatusCode.BadRequest,
             _ => HttpStatusCode.InternalServerError
         };
 

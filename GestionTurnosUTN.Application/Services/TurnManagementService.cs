@@ -27,6 +27,9 @@ public class TurnManagementService : ITurnManagementService
         var interval = await _repository.GetById<Interval>(request.IntervalId, nameof(Interval.Notes)); if(interval == null) throw new EntityNotFoundException("Interval not found.");
         var student = await _repository.GetById<Student>(request.StudentId); if(student == null) throw new EntityNotFoundException("Student not found.");
         var note = await _repository.GetById<Note>(request.NoteId); if(note == null) throw new EntityNotFoundException("Note not found.");
+
+        if (await _repository.First<Turn>(t => t.StudentId == request.StudentId && t.NoteId == request.NoteId && t.Status != TurnStatus.PENDING && t.IntervalId == request.IntervalId) != null) throw new InvalidOperationException("the student already have a Turn on the interval with the same note");
+
         if(!interval.Notes.Any(n => n.Id == request.NoteId)) throw new BadRequestException("Note isn't already associated with the interval.");
         
         string securityCode;  

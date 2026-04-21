@@ -24,8 +24,18 @@ public record TurnModel
         Guid StudentId,
         Guid NoteId
     );
-
-    public record CancelRequest(Guid Id);
+    public record CancelRequest(Guid Id, string SecurityCode);
+    public record FilterTurn(
+        int? Search, //legajo del estudiante
+        string? Status, 
+        Guid? NoteId, 
+        Guid? IntervalId, 
+        //consultar si esta bien planteado lo de las fechas o si esta de mas
+        DateTime? Date,
+        DateTime? DateStart,
+        DateTime? DateEnd,
+        int? PageNumber, int? PageSize);
+    public record ResponsePagination(List<Response> TurnItems, int Total);
 
 
 }

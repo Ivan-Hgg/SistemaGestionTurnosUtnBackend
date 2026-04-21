@@ -26,4 +26,12 @@ public class TurnController : ControllerBase
         await _turnService.CancelTurnAsync(request);
         return Ok();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetTurns([FromQuery]TurnModel.FilterTurn request)
+    {
+        var turns= await _turnService.GetTurnsAsync(request);
+        if (turns is null) return NoContent();
+        return Ok(turns);
+    }
 }

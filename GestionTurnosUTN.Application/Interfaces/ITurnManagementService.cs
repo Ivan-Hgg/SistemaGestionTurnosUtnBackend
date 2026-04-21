@@ -12,4 +12,5 @@ public interface ITurnManagementService
 {
      Task<TurnModel.Response> CreateTurnAsync(TurnModel.Request request);
      Task CancelTurnAsync(TurnModel.CancelRequest request);
+    Task<TurnModel.ResponsePagination> GetTurnsAsync(TurnModel.FilterTurn request);
 }

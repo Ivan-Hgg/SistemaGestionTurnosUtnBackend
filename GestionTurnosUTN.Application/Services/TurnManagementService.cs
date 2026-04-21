@@ -32,7 +32,7 @@ public class TurnManagementService : ITurnManagementService
         if (request.Date < interval.DateStart|| request.Date>= interval.DateEnd)
             throw new BadRequestException("El horario está fuera del intervalo.");
 
-        if (await _repository.First<Turn>(t => t.Date== request.Date) != null) 
+        if (await _repository.First<Turn>(t => t.Date== request.Date && t.Status==TurnStatus.PENDING) != null) 
             throw new InvalidOperationException("The DateTime is reserved");
 
         if (await _repository.First<Turn>(t => t.StudentId == request.StudentId && t.NoteId == request.NoteId && t.Status == TurnStatus.PENDING && t.IntervalId == request.IntervalId) != null)
@@ -40,7 +40,7 @@ public class TurnManagementService : ITurnManagementService
 
         if(!interval.Notes.Any(n => n.Id == request.NoteId)) throw new BadRequestException("Note isn't already associated with the interval.");
         
-        //para reslver lo del timePerTurn
+        //para resolver lo del timePerTurn
         var diff = (request.Date - interval.DateStart).TotalMinutes;
         if (diff < 0 || diff % interval.TimePerTurn != 0)
             throw new BadRequestException("The schedule does not match the available shifts.");
@@ -73,12 +73,48 @@ public class TurnManagementService : ITurnManagementService
 
     public async Task CancelTurnAsync(TurnModel.CancelRequest request)
     {
+        TurnValidator.CancelTurnValidation(request);
         var turn = await _repository.GetById<Turn>(request.Id); if(turn ==null)throw new EntityNotFoundException("Turn doesn't found");
+        //conviene hacer una validacion por si el turno ya estaba cancelado?
         turn.Status = TurnStatus.CANCELLED;
         await _repository.Update(turn);
         return;
-
     }
 
+    public async Task<TurnModel.ResponsePagination> GetTurnsAsync(TurnModel.FilterTurn request)
+    {
+        TurnValidator.FilterTurnValidation(request);
+        var status= request.Status =="PENDING" ? TurnStatus.PENDING : 
+            request.Status== "ATTENDED"? TurnStatus.ATTENDED:
+            request.Status== "LOST" ? TurnStatus.LOST:
+            request.Status== "CANCELLED" ? TurnStatus.CANCELLED:
+            (TurnStatus?)null;
+
+        var filteredTurns = await _repository.GetFiltered<Turn>(t=> (
+            (status==null || t.Status==status) 
+            && (request.Date!=null? t.Date == request.Date 
+                : (request.DateStart == null || t.Date >= request.DateStart)
+                &&(request.DateEnd == null || t.Date <= request.DateEnd))   
+            && (request.IntervalId==null || t.IntervalId== request.IntervalId) 
+            && (request.NoteId == null || t.NoteId==request.NoteId))
+            && (request.Search==null || (t.Student != null && t.Student.Legajo == request.Search))
+            , nameof(Turn.Student));
+        if (filteredTurns is null || !filteredTurns.Any()) throw new NoContentException("No turns were found");
+        var turns = filteredTurns.Select(t=> new TurnModel.Response(
+            t.Id,
+            t.SecurityCode,
+            t.Date,
+            t.Status.ToString(),
+            t.IntervalId,
+            t.StudentId,
+            t.NoteId
+            ))
+        .OrderBy(t=>t.Date)
+        .Skip((request.PageNumber-1) * request.PageSize??0)
+        .Take(request.PageSize ?? filteredTurns.Count());
+        
+        return new TurnModel.ResponsePagination(turns.ToList(), filteredTurns.Count());
+
+    }
 
 }

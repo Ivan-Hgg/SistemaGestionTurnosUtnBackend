@@ -1,0 +1,134 @@
+﻿
+using GestionTurnosUTN.Application.Dtos;
+using GestionTurnosUTN.Application.Interfaces;
+using GestionTurnosUTN.Application.Validation;
+using GestionTurnosUTN.Data.Identity;
+using GestionTurnosUTN.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GestionTurnosUTN.Application.Services;
+
+public class AuthenticateService : IAuthenticateService
+{
+    private readonly IRepository _repository;
+    private readonly UserManager<IdentityUserExtension> _userManager;
+    private readonly SignInManager<IdentityUserExtension> _signInManager;
+    private readonly IJwtTokenService _jwtTokenService;
+    private readonly ILogger<AuthenticateService> _logger;
+
+    public AuthenticateService(IRepository repository, UserManager<IdentityUserExtension> userManager
+        , SignInManager<IdentityUserExtension> signInManager, IJwtTokenService jwtTokenService, ILogger<AuthenticateService> logger)
+    {
+        _repository = repository;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _jwtTokenService = jwtTokenService;
+        _logger = logger;
+    }
+    public async Task<LoginModelResponse> LoginAsync(LoginModelRequest model)
+    {
+        AuthenticateValidator.ValidateLoginModelRequest(model);
+
+        var user = await _userManager.FindByNameAsync(model.Username);
+        if (user == null) throw new UnauthorizedAccessException("Usuario o contraseña incorrectos");
+
+        var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+        if (!result.Succeeded) throw new UnauthorizedAccessException("Usuario o contraseña incorrectos");
+        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        if (role is null)
+            throw new InvalidOperationException("El usuario no tiene roles asignados.");
+        var token = _jwtTokenService.GenerateToken(model.Username, role);
+        _logger.LogInformation($"Se logueó el usuario: {model.Username}");
+        return new LoginModelResponse(token, role); 
+    }
+    //BORRAR ESTO
+    public async Task<RegisterModelResponse> RegisterAsync(RegisterModel model)
+    {
+        return new RegisterModelResponse(
+                null,
+                string.Empty,
+                model.Role.ToUpper()
+            );
+    }
+
+    //public async Task<RegisterModelResponse> RegisterAsync(RegisterModel model)
+    //{
+    //    AuthenticateValidator.ValidateRegisterModelRequest(model);
+
+    //    var existUser = await _userManager.FindByNameAsync(model.Username);
+    //    if (existUser != null) throw new DuplicatedEntityException($"El nombre de usuario {model.Username} ya existe.");
+    //    if(model.Role.ToUpper() != "ADMINISTRADOR")
+    //    {
+    //        var existmail = await _repository.First<Customer>(c => c.Email == model.Customer.Email);
+    //        if (existmail != null) throw new DuplicatedEntityException($"Un cliente ya fue registrado con el EMAIL: {model.Customer.Email}");
+
+    //        var existPhoneNumber = await _repository.First<Customer>(c => c.PhoneNumber == model.Customer.PhoneNumber);
+    //        if (existPhoneNumber != null) throw new DuplicatedEntityException($"Un cliente ya fue registrado el numero de telefono: {model.Customer.PhoneNumber}");
+
+    //        var customer = new Customer(model.Customer.Name, model.Customer.Email, model.Customer.PhoneNumber);
+    //        var user = new IdentityUserExtension { CustomerId = customer.Id, UserName = model.Username, Email = model.Customer.Email, PhoneNumber = model.Customer.PhoneNumber };
+
+    //        var resultCustomer = await _repository.Add(customer);
+    //        if (resultCustomer is null)
+    //        {
+    //            throw new DataInsertException("Error al crear el cliente");
+    //        }
+    //        var result = await _userManager.CreateAsync(user, model.Password);
+    //        if (!result.Succeeded)
+    //        {
+    //            IEnumerable<string> errorMessages = result.Errors.Select(e => e.Description);
+    //            string fullErrorMessage = string.Join("\\n", errorMessages);
+    //            await _repository.Delete(customer);
+    //            throw new DataInsertException(fullErrorMessage);
+    //        }
+    //        var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToUpper());
+    //        if (!roleResult.Succeeded)
+    //        {
+    //            await _userManager.DeleteAsync(user);
+    //            await _repository.Delete(customer);
+    //            throw new DataInsertException("Error Asignando Rol al usuario");
+    //        }
+
+    //        _logger.LogInformation($"Se registró un nuevo usuario: {model.Username} con rol {model.Role.ToUpper()}");
+    //        return new RegisterModelResponse(
+    //            customer.Id,
+    //            user.UserName,
+    //            model.Role.ToUpper()
+    //        );
+    //    }
+    //    else
+    //    {
+    //        var user = new IdentityUserExtension { UserName = model.Username, Email=model.Email };
+    //        var result = await _userManager.CreateAsync(user, model.Password);
+    //        if (!result.Succeeded)
+    //        {
+    //            IEnumerable<string> errorMessages = result.Errors.Select(e => e.Description);
+    //            string fullErrorMessage = string.Join("\\n", errorMessages);
+    //            throw new DataInsertException(fullErrorMessage);
+    //        }
+    //        var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToUpper());
+    //        if (!roleResult.Succeeded)
+    //        {
+    //            await _userManager.DeleteAsync(user);
+    //            throw new DataInsertException("Error Asignando Rol al usuario");
+    //        }
+
+    //        _logger.LogInformation($"Se registró un nuevo usuario: {model.Username} con rol {model.Role.ToUpper()}");
+    //        return new RegisterModelResponse(
+    //            null,
+    //            user.UserName,
+    //            model.Role.ToUpper()
+    //        );
+    //    }
+
+
+
+
+    //}
+}

@@ -1,11 +1,13 @@
 ﻿using GestionTurnosUTN.Application.Dtos;
 using GestionTurnosUTN.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace GestionTurnosUTN.Api.Controllers;
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TurnController : ControllerBase
 {
     private readonly ITurnManagementService _turnService;

@@ -1,0 +1,10 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GestionTurnosUTN.Application.Dtos;
+
+public record LoginModelRequest(string Username, string Password);
+public record LoginModelResponse(string Token, string role);

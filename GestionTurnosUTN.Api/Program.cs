@@ -48,6 +48,7 @@ public class Program
         builder.Services.AddHealthChecks();
 
         // Add Services
+        builder.Services.AddJWTServices(builder.Configuration);
         builder.Services.AddDataServices(builder.Configuration);
         builder.Services.AddDomainServices();
         

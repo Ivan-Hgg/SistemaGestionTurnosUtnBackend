@@ -71,11 +71,17 @@ public class TurnManagementService : ITurnManagementService
         );
     }
 
-    public async Task CancelTurnAsync(TurnModel.CancelRequest request)
+    public async Task CancelTurnAsync(TurnModel.ChangeStatusRequest request)
     {
         TurnValidator.CancelTurnValidation(request);
         var turn = await _repository.GetById<Turn>(request.Id); if(turn ==null)throw new EntityNotFoundException("Turn doesn't found");
         //conviene hacer una validacion por si el turno ya estaba cancelado?
+        if (turn.Status != TurnStatus.PENDING)
+            throw new InvalidOperationException("Cant Cancel a Turn Attended or Lost");
+        TimeSpan duration= DateTime.Now-turn.Date;
+        if (duration.TotalDays > 3) throw new InvalidOperationException("You can't cancel a turn after 3 days of take it");
+        if (turn.SecurityCode != request.SecurityCode) throw new BadRequestException("The SecurityCode is incorrect");
+
         turn.Status = TurnStatus.CANCELLED;
         await _repository.Update(turn);
         return;
@@ -116,5 +122,37 @@ public class TurnManagementService : ITurnManagementService
         return new TurnModel.ResponsePagination(turns.ToList(), filteredTurns.Count());
 
     }
+    //me conviene hacer un solo metodo de cambio de estado o hacer por separado para darle mayor seguridad?
+    public async Task ChangeStatusTurn(TurnModel.StatusRequest request)
+    {
+        if (request == null) throw new BadRequestException("The request is required");
+        var status = request.Status == "PENDING" ? TurnStatus.PENDING :
+            request.Status == "ATTENDED" ? TurnStatus.ATTENDED :
+            request.Status == "LOST" ? TurnStatus.LOST :
+            request.Status == "CANCELLED" ? TurnStatus.CANCELLED :
+            (TurnStatus?)null;
+        var turn = await _repository.GetById<Turn>(request.Id) ?? throw new EntityNotFoundException("there is no Turn with that Id.");
+        if (status == TurnStatus.CANCELLED)
+            if (turn.SecurityCode != request.SecurityCode) throw new BadRequestException("The SecurityCode is incorrect");
+    }
 
+    public async Task AttendedTurn (TurnModel.ChangeStatusRequest request)
+    {
+        if (request == null) throw new BadRequestException("The request is required");
+        var turn = await _repository.GetById<Turn>(request.Id) ?? throw new EntityNotFoundException("there is no Turn with that Id.");
+        if (turn.DateAttended != null) throw new InvalidOperationException("The turn has already attended");
+        turn.Status = TurnStatus.ATTENDED;
+        turn.DateAttended=DateTime.Now;
+        await _repository.Update(turn);
+        return;
+    }
+    public async Task LostTurn(TurnModel.ChangeStatusRequest request)
+    {
+        if (request == null) throw new BadRequestException("The request is required");
+        var turn = await _repository.GetById<Turn>(request.Id) ?? throw new EntityNotFoundException("there is no Turn with that Id.");
+        if (turn.DateAttended != null) throw new InvalidOperationException("The turn has been attended");
+        turn.Status = TurnStatus.LOST;
+        await _repository.Update(turn);
+        return;
+    }
 }

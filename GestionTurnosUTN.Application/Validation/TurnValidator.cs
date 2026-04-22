@@ -16,7 +16,7 @@ public class TurnValidator
         if (request.Date < DateTime.Now) throw new BadRequestException("Date is required.");
     }
 
-    public static void CancelTurnValidation(TurnModel.CancelRequest request)
+    public static void CancelTurnValidation(TurnModel.ChangeStatusRequest request)
     {
         if(request is null) throw new BadRequestException("the request is required");
         if(string.IsNullOrEmpty(request.SecurityCode) || string.IsNullOrWhiteSpace(request.SecurityCode)) throw new BadRequestException("The securityCode is required");

@@ -20,8 +20,8 @@ public class TurnController : ControllerBase
         return Ok(newTurn);
     }
 
-    [HttpPut]
-    public async Task<IActionResult> CancelTurn([FromBody] TurnModel.CancelRequest request)
+    [HttpPut("Cancel")]
+    public async Task<IActionResult> CancelTurn([FromBody] TurnModel.ChangeStatusRequest request)
     {
         await _turnService.CancelTurnAsync(request);
         return Ok();
@@ -33,5 +33,17 @@ public class TurnController : ControllerBase
         var turns= await _turnService.GetTurnsAsync(request);
         if (turns is null) return NoContent();
         return Ok(turns);
+    }
+    [HttpPut("Attend")]
+    public async Task<IActionResult> AttendTurn([FromBody] TurnModel.ChangeStatusRequest request)
+    {
+        await _turnService.AttendedTurn(request);
+        return Ok();
+    }
+    [HttpPut("Lose")]
+    public async Task<IActionResult> loseTurn([FromBody] TurnModel.ChangeStatusRequest request)
+    {
+        await _turnService.LostTurn(request);
+        return Ok();
     }
 }

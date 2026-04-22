@@ -25,6 +25,7 @@ public record TurnModel
         Guid NoteId
     );
     public record CancelRequest(Guid Id, string SecurityCode);
+    public record ChangeStatusRequest(Guid Id, string? SecurityCode);
     public record FilterTurn(
         int? Search, //legajo del estudiante
         string? Status, 
@@ -36,6 +37,8 @@ public record TurnModel
         DateTime? DateEnd,
         int? PageNumber, int? PageSize);
     public record ResponsePagination(List<Response> TurnItems, int Total);
+
+    public record StatusRequest(Guid Id, string Status, string? SecurityCode);
 
 
 }

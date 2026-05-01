@@ -1,4 +1,4 @@
-﻿using Dsw2025Tpi.Application.Exceptions;
+﻿using GestionTurnosUTN.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
 

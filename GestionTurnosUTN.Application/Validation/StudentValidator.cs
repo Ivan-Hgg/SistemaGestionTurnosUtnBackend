@@ -1,4 +1,4 @@
-﻿using Dsw2025Tpi.Application.Exceptions;
+﻿using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Dtos;
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ public class StudentValidator
             throw new BadRequestException("El email debe tener entre 5 y 254 caracteres.");
         if (email.StartsWith('.') || email.EndsWith('.'))
             throw new BadRequestException("El email no puede comenzar o terminar con un punto '.'");
-        if (!email.EndsWith("alu.frt.utn.edu.ar"))
+        if (!email.EndsWith("@alu.frt.utn.edu.ar"))
             throw new BadRequestException("The mail only can be an Institutional mail");
         var pattern = @"^[a-zA-Z0-9.!#$%&'+-/=?^_`{|}~]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+$";
         var regex = new Regex(pattern);

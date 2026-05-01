@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dsw2025Tpi.Application.Exceptions;
+using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Dtos;
 //using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Interfaces;

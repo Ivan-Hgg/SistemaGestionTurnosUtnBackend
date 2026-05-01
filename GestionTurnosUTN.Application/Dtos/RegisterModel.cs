@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 
 namespace GestionTurnosUTN.Application.Dtos;
 
-public record RegisterModel(
+public record RegisterStudentModel(
     string Username,
-    StudentModel.StudentRequest? Student,
-    WorkerModel.WorkerRequest? Worker,
-    string Password,
-    string Role
+    StudentModel.StudentRequest Student,
+    string Password
+);
+
+public record RegisterWorkerModel(
+    string Username,
+    WorkerModel.WorkerRequest Worker,
+    string Password
 );
 
 public record RegisterModelResponse(
     Guid? Id,
-    string Username,
-    string Role
+    string Username
 );

@@ -10,6 +10,8 @@ namespace GestionTurnosUTN.Application.Interfaces;
 
 public interface IAuthenticateService
 {
-    Task<RegisterModelResponse> RegisterAsync(RegisterModel model);
+    Task<RegisterModelResponse> RegisterStudentAsync(RegisterStudentModel model);
+    Task<RegisterModelResponse> RegisterWorkerAsync(RegisterWorkerModel model);
     Task<LoginModelResponse> LoginAsync(LoginModelRequest model);
+    Task BeSupreme(Guid workerId);
 }

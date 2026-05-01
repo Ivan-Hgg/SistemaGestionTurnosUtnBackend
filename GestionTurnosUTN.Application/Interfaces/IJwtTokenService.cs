@@ -9,4 +9,5 @@ namespace GestionTurnosUTN.Application.Interfaces;
 public interface IJwtTokenService
 {
     string GenerateToken(string username, string role);
+    string GenerateTokenMoreRoles(string username, List<string> roles);
 }

@@ -1,4 +1,4 @@
-﻿using Dsw2025Tpi.Application.Exceptions;
+﻿using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Dtos;
 using System;
 using System.Collections.Generic;

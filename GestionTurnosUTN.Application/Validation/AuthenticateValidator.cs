@@ -1,4 +1,4 @@
-﻿using Dsw2025Tpi.Application.Exceptions;
+﻿using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Dtos;
 using System;
 using System.Collections.Generic;
@@ -11,19 +11,20 @@ namespace GestionTurnosUTN.Application.Validation;
 
 public static class AuthenticateValidator
 {
-    public static void ValidateRegisterModelRequest(RegisterModel model)
+    public static void ValidateRegisterStudentModelRequest(RegisterStudentModel model)
     {
         if (model == null)
             throw new BadRequestException("El modelo de registro no puede ser nulo.");
         ValidateUsername(model.Username);
-        ValidateRole(model.Role);
-        if (model.Role.ToUpper() == "WORKER" && model.Worker!=null)
-        {
-            WorkerValidator.WorkerModelRequestValidator(model.Worker);
-        } else if(model.Role.ToUpper() =="STUDENT" && model.Student!=null)
-        {
-            StudentValidator.StudentModelRequestValidate(model.Student);
-        }
+        StudentValidator.StudentModelRequestValidate(model.Student);
+        ValidatePassword(model.Password);
+    }
+    public static void ValidateRegisterWorkerModelRequest(RegisterWorkerModel model)
+    {
+        if (model == null)
+            throw new BadRequestException("El modelo de registro no puede ser nulo.");
+        ValidateUsername(model.Username);
+        WorkerValidator.WorkerModelRequestValidator(model.Worker);
         ValidatePassword(model.Password);
     }
 
@@ -53,14 +54,4 @@ public static class AuthenticateValidator
         if (string.IsNullOrWhiteSpace(password))
             throw new BadRequestException("La contraseña es obligatoria.");
     }
-
-    public static void ValidateRole(string role)
-    {
-        if (string.IsNullOrWhiteSpace(role))
-            throw new BadRequestException("El rol es obligatorio.");
-        if (role.ToUpper() != "WORKER" && role.ToUpper() != "STUDENT" && role.ToUpper() != "SUPREME")
-            throw new BadRequestException($"El rol ingresado es desconocido: {role} "+ " Posibles roles: 'WORKER' o 'STUDENT' o 'SUPREME'.");
-    }
-
-
 }

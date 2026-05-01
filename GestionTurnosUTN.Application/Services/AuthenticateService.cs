@@ -1,6 +1,7 @@
 ﻿
-using Dsw2025Tpi.Application.Exceptions;
+using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Dtos;
+using GestionTurnosUTN.Application.Exceptions;
 using GestionTurnosUTN.Application.Interfaces;
 using GestionTurnosUTN.Application.Validation;
 using GestionTurnosUTN.Data.Identity;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionTurnosUTN.Application.Services;
 
@@ -42,111 +44,110 @@ public class AuthenticateService : IAuthenticateService
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
         if (!result.Succeeded) throw new UnauthorizedAccessException("Usuario o contraseña incorrectos");
-        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        var role = (await _userManager.GetRolesAsync(user));
         if (role is null)
             throw new InvalidOperationException("El usuario no tiene roles asignados.");
-        var token = _jwtTokenService.GenerateToken(model.Username, role);
+        var token = _jwtTokenService.GenerateTokenMoreRoles(model.Username, role.ToList());
         _logger.LogInformation($"Se logueó el usuario: {model.Username}");
-        return new LoginModelResponse(token, role); 
+        return new LoginModelResponse(token, role.ToList()); 
     }
-    //BORRAR ESTO
-    //public async Task<RegisterModelResponse> RegisterAsync(RegisterModel model)
-    //{
-    //    return new RegisterModelResponse(
-    //            null,
-    //            string.Empty,
-    //            model.Role.ToUpper()
-    //        );
-    //}
 
-    public async Task<RegisterModelResponse> RegisterAsync(RegisterModel model)
+    public async Task<RegisterModelResponse> RegisterStudentAsync(RegisterStudentModel model)
     {
-        AuthenticateValidator.ValidateRegisterModelRequest(model);
+        AuthenticateValidator.ValidateRegisterStudentModelRequest(model);
 
         var existUser = await _userManager.FindByNameAsync(model.Username);
         if (existUser != null) throw new DuplicatedEntityException($"El nombre de usuario {model.Username} ya existe.");
-        if (model.Role.ToUpper() == "STUDENT" && model.Student != null)
+
+        var existmail = await _repository.First<Student>(c => c.InstitutionalEmail == model.Student.InstitutionalEmail);
+        if (existmail != null) throw new DuplicatedEntityException($"Un estudiante ya fue registrado con el EMAIL: {model.Student.InstitutionalEmail}");
+
+        var existLegajo = await _repository.First<Student>(c => c.Legajo == model.Student.Legajo);
+        if (existLegajo != null) throw new DuplicatedEntityException($"Un cliente ya fue registrado el nuemro de legajo: {model.Student.Legajo}");
+
+        var student = new Student(model.Student.Name, model.Student.InstitutionalEmail, model.Student.Legajo);
+        var user = new IdentityUserExtension { StudenId = student.Id, UserName = model.Username, Email = model.Student.InstitutionalEmail };
+
+        var resultStudent = await _repository.Add(student);
+        if (resultStudent is null)
         {
-            var existmail = await _repository.First<Student>(c => c.InstitutionalEmail == model.Student.InstitutionalEmail);
-            if (existmail != null) throw new DuplicatedEntityException($"Un estudiante ya fue registrado con el EMAIL: {model.Student.InstitutionalEmail}");
-
-            var existLegajo = await _repository.First<Student>(c => c.Legajo == model.Student.Legajo);
-            if (existLegajo != null) throw new DuplicatedEntityException($"Un cliente ya fue registrado el nuemro de legajo: {model.Student.Legajo}");
-
-            var student = new Student(model.Student.Name, model.Student.InstitutionalEmail, model.Student.Legajo);
-            var user = new IdentityUserExtension { StudenId = student.Id, UserName = model.Username, Email = model.Student.InstitutionalEmail };
-
-            var resultStudent = await _repository.Add(student);
-            if (resultStudent is null)
-            {
-                throw new DataInsertException("Error al crear el cliente");
-            }
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                await _repository.Delete(student);
-                throw new DataInsertException(result.Errors.ToString());
-            }
-            var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToUpper());
-            if (!roleResult.Succeeded)
-            {
-                await _userManager.DeleteAsync(user);
-                await _repository.Delete(student);
-                throw new DataInsertException("Error Asignando Rol al usuario");
-            }
-
-            _logger.LogInformation($"Se registró un nuevo usuario: {model.Username} con rol {model.Role.ToUpper()}");
-            return new RegisterModelResponse(
-                student.Id,
-                user.UserName,
-                model.Role.ToUpper()
-            );
+            throw new DataInsertException("Error al crear el cliente");
         }
-        //falta corregir este else y probar todos los posibles flujos en el registro
-        else if (model.Role.ToUpper() == "WORKER" && model.Worker != null)
+        var result = await _userManager.CreateAsync(user, model.Password);
+        if (!result.Succeeded)
         {
-            var existmail = await _repository.First<Worker>(c => c.Email == model.Worker.Email);
-            if (existmail != null) throw new DuplicatedEntityException($"Un worker ya fue registrado con el EMAIL: {model.Worker.Email}");
-
-            var existPhoneNumber = await _repository.First<Worker>(c => c.PhoneNumber == model.Worker.PhoneNumber);
-            if (existPhoneNumber != null) throw new DuplicatedEntityException($"Un worker ya fue registrado el nuemro de telefono: {model.Worker.PhoneNumber}");
-
-            var worker = new Worker(model.Worker.Name, model.Worker.PhoneNumber, model.Worker.Email);
-
-            var user = new IdentityUserExtension { WorkerId = worker.Id, UserName = model.Username, Email = model.Worker.Email };
-
-            var resultWorker = await _repository.Add(worker);
-            if (resultWorker is null)
-            {
-                throw new DataInsertException("Error al crear el Worker");
-            }
-
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                await _repository.Delete(worker);
-                throw new DataInsertException(result.Errors.ToString());
-            }
-            var roleResult = await _userManager.AddToRoleAsync(user, model.Role.ToUpper());
-            if (!roleResult.Succeeded)
-            {
-                await _userManager.DeleteAsync(user);
-                await _repository.Delete(worker);
-
-                throw new DataInsertException("Error Asignando Rol al usuario");
-            }
-
-            _logger.LogInformation($"Se registró un nuevo usuario: {model.Username} con rol {model.Role.ToUpper()}");
-            return new RegisterModelResponse(
-                worker.Id,
-                user.UserName,
-                model.Role.ToUpper()
-            );
+            await _repository.Delete(student);
+            throw new DataInsertException(result.Errors.ToString() ?? "It has errors to create the user");
         }
-        else throw new Exception("the Role Doesn't match its respective entity");
+        var roleResult = await _userManager.AddToRoleAsync(user, "STUDENT");
+        if (!roleResult.Succeeded)
+        {
+            await _userManager.DeleteAsync(user);
+            await _repository.Delete(student);
+            throw new DataInsertException("Error Asignando Rol al usuario");
+        }
 
-
-
-
+        _logger.LogInformation($"Se registró un nuevo usuario: {model.Username} con rol STUDENT");
+        return new RegisterModelResponse(
+            student.Id,
+            user.UserName
+        );
     }
+
+    public async Task<RegisterModelResponse> RegisterWorkerAsync(RegisterWorkerModel model)
+    {
+        AuthenticateValidator.ValidateRegisterWorkerModelRequest(model);
+
+        var existUser = await _userManager.FindByNameAsync(model.Username);
+        if (existUser != null) throw new DuplicatedEntityException($"El nombre de usuario {model.Username} ya existe.");
+
+        var existmail = await _repository.First<Worker>(c => c.Email == model.Worker.Email);
+        if (existmail != null) throw new DuplicatedEntityException($"Un worker ya fue registrado con el EMAIL: {model.Worker.Email}");
+
+        var existPhoneNumber = await _repository.First<Worker>(c => c.PhoneNumber == model.Worker.PhoneNumber);
+        if (existPhoneNumber != null) throw new DuplicatedEntityException($"Un worker ya fue registrado el nuemro de telefono: {model.Worker.PhoneNumber}");
+
+        var worker = new Worker(model.Worker.Name, model.Worker.PhoneNumber, model.Worker.Email);
+        var user = new IdentityUserExtension { WorkerId = worker.Id, UserName = model.Username, Email = model.Worker.Email };
+
+        var resultWorker = await _repository.Add(worker);
+        if (resultWorker is null)
+        {
+            throw new DataInsertException("Error al crear el Worker");
+        }
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+        if (!result.Succeeded)
+        {
+            IEnumerable<string> errorMessages = result.Errors.Select(e => e.Description);
+            string fullErrorMessage = string.Join("\\n", errorMessages);
+            await _repository.Delete(worker);
+            throw new DataInsertException(fullErrorMessage);
+        }
+        var roleResult = await _userManager.AddToRoleAsync(user, "WORKER");
+        if (!roleResult.Succeeded)
+        {
+            await _userManager.DeleteAsync(user);
+            await _repository.Delete(worker);
+
+            throw new DataInsertException("Error Asignando Rol al usuario");
+        }
+
+        _logger.LogInformation($"Se registró un nuevo usuario: {model.Username} con rol WORKER");
+        return new RegisterModelResponse(
+            worker.Id,
+            user.UserName
+        );
+    }
+
+    public async Task BeSupreme(Guid workerId)
+    {
+        var user = await _userManager.Users.FirstOrDefaultAsync(u=>u.WorkerId== workerId) 
+            ?? throw new BadRequestException("the WorkerId is wrong");
+        var roleResult = await _userManager.AddToRoleAsync(user, "SUPREME");
+        if (!roleResult.Succeeded)
+            throw new DataInsertException("Error Asignando Rol al usuario");
+        return;
+    }
+
 }

@@ -12,6 +12,13 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        //add logger
+
+        builder.Services.AddLogging(config => {
+            config.AddConsole();
+            config.AddEventLog();
+        });
+
         // Add services to the container.
 
         builder.Services.AddControllers();
@@ -48,6 +55,7 @@ public class Program
         builder.Services.AddHealthChecks();
 
         // Add Services
+        builder.Services.AddIdentityServices(builder.Configuration);
         builder.Services.AddJWTServices(builder.Configuration);
         builder.Services.AddDataServices(builder.Configuration);
         builder.Services.AddDomainServices();
@@ -75,7 +83,9 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
+
 
 
         app.MapControllers();

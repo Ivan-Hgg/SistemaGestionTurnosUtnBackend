@@ -1,11 +1,13 @@
 ﻿using GestionTurnosUTN.Application.Dtos;
 using GestionTurnosUTN.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionTurnosUTN.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = "WORKER")]
 public class NewsController : ControllerBase
 {
     private readonly INewsService _newsService;
@@ -16,6 +18,7 @@ public class NewsController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll()
     {
         var news = await _newsService.GetAllNewsAsync();

@@ -13,19 +13,18 @@ public static class AuthenticateValidator
 {
     public static void ValidateRegisterModelRequest(RegisterModel model)
     {
-        //if (model == null)
-        //    throw new BadRequestException("El modelo de registro no puede ser nulo.");
-        //ValidateUsername(model.Username);
-        //ValidateRole(model.Role);
-        //if (model.Role.ToUpper() != "ADMINISTRADOR")
-        //{
-        //    CustomerValidator.Validate(model.Customer);
-        //}
-        //else
-        //{
-        //    CustomerValidator.ValidateEmail(model.Email);
-        //}
-            ValidatePassword(model.Password);
+        if (model == null)
+            throw new BadRequestException("El modelo de registro no puede ser nulo.");
+        ValidateUsername(model.Username);
+        ValidateRole(model.Role);
+        if (model.Role.ToUpper() == "WORKER" && model.Worker!=null)
+        {
+            WorkerValidator.WorkerModelRequestValidator(model.Worker);
+        } else if(model.Role.ToUpper() =="STUDENT" && model.Student!=null)
+        {
+            StudentValidator.StudentModelRequestValidate(model.Student);
+        }
+        ValidatePassword(model.Password);
     }
 
     public static void ValidateLoginModelRequest(LoginModelRequest model) 
@@ -59,8 +58,8 @@ public static class AuthenticateValidator
     {
         if (string.IsNullOrWhiteSpace(role))
             throw new BadRequestException("El rol es obligatorio.");
-        if (role.ToUpper() != "TRABAJADOR" && role.ToUpper() != "ESTUDIANTE" && role.ToUpper() != "SUPREMO")
-            throw new BadRequestException($"El rol ingresado es desconocido: {role} "+ " Posibles roles: 'TRABAJADOR' o 'ESTUDIANTE'.");
+        if (role.ToUpper() != "WORKER" && role.ToUpper() != "STUDENT" && role.ToUpper() != "SUPREME")
+            throw new BadRequestException($"El rol ingresado es desconocido: {role} "+ " Posibles roles: 'WORKER' o 'STUDENT' o 'SUPREME'.");
     }
 
 

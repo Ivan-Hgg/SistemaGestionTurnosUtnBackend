@@ -29,6 +29,10 @@ public static class ProgramExtension
     {
         services.AddScoped<INewsService, NewsManagementService>(); // Carlos: Agrego el servicio de gestión de noticias a la inyección de dependencias
         services.AddScoped<ITurnManagementService, TurnManagementService>();
+        services.AddScoped<IAuthenticateService, AuthenticateService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<AuthenticateContext>();  //esto es para que se pueda inyectar el contexto de la base de datos en los servicios de aplicación
+        services.AddScoped <GestionTurnosUTNDomainContext>();
         // Aquí puedes agregar tus servicios de dominio, por ejemplo:
         // services.AddScoped<IMiServicioDeDominio, MiServicioDeDominio>();
 

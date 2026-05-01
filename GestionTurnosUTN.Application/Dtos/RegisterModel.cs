@@ -8,14 +8,14 @@ namespace GestionTurnosUTN.Application.Dtos;
 
 public record RegisterModel(
     string Username,
-    string? Email,
-    //CustomerModel.CustomerModelRequest? Customer,
+    StudentModel.StudentRequest? Student,
+    WorkerModel.WorkerRequest? Worker,
     string Password,
     string Role
 );
 
 public record RegisterModelResponse(
-    Guid? CustomerId,
+    Guid? Id,
     string Username,
     string Role
 );

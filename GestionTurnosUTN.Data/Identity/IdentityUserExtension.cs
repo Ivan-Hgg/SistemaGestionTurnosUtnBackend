@@ -10,8 +10,8 @@ namespace GestionTurnosUTN.Data.Identity;
 
 public class IdentityUserExtension : IdentityUser
 {
-    public Guid? WorkerId { get; set; } // Fk
-    public Guid? StudenId { get; set; } // Fk
+    public Guid? WorkerId { get; init; } // Fk
+    public Guid? StudenId { get; init; } // Fk
 
 
 }

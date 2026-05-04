@@ -8,7 +8,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Dsw2025Tpi.Data.Repositories;
+namespace GestionTurnosUTN.Data.Repositories;
 
 public class EfRepository : IRepository
 {

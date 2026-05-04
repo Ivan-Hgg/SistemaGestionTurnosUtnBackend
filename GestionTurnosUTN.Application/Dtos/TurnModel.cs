@@ -10,9 +10,7 @@ namespace GestionTurnosUTN.Application.Dtos;
 public record TurnModel
 {
     public record Request(
-        string SecurityCode,
         DateTime Date,
-        TurnStatus Status,
         Guid IntervalId,
         Guid StudentId,
         Guid NoteId
@@ -21,11 +19,26 @@ public record TurnModel
         Guid Id,
         string SecurityCode,
         DateTime Date,
-        TurnStatus Status,
+        string Status,
         Guid IntervalId,
         Guid StudentId,
         Guid NoteId
     );
+    public record CancelRequest(Guid Id, string SecurityCode);
+    public record ChangeStatusRequest(Guid Id, string? SecurityCode);
+    public record FilterTurn(
+        int? Search, //legajo del estudiante
+        string? Status, 
+        Guid? NoteId, 
+        Guid? IntervalId, 
+        //consultar si esta bien planteado lo de las fechas o si esta de mas
+        DateTime? Date,
+        DateTime? DateStart,
+        DateTime? DateEnd,
+        int? PageNumber, int? PageSize);
+    public record ResponsePagination(List<Response> TurnItems, int Total);
+
+    public record StatusRequest(Guid Id, string Status, string? SecurityCode);
 
 
 }

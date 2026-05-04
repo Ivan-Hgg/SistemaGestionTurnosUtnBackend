@@ -34,6 +34,7 @@ public class GestionTurnosUTNDomainContext : DbContext
                 eb.Property(i => i.DateEnd).IsRequired();
                 eb.Property(i => i.IsActive).IsRequired();
                 eb.Property(i => i.ExplainDesactivation).HasMaxLength(250);
+                eb.Property(i => i.TimePerTurn).IsRequired();
                 // Relationships
                 eb.HasOne(i => i.Worker)
                   .WithMany(s => s.Intervals)

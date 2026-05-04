@@ -11,7 +11,7 @@ public class Student : EntityBase
     public string InstitutionalEmail { get; set; }
     public int Legajo { get; set; }
     // Navigation properties
-    public IEnumerable<Turn>? Turns { get; set; }
+    public ICollection<Turn>? Turns { get; set; }
     public Student(string name, string institutionalEmail, int legajo)
     {
         Name = name;

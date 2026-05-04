@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dsw2025Tpi.Application.Exceptions
+namespace GestionTurnosUTN.Application.Exceptions;
+
+public class EntityNotFoundException(string message) : Exception(message)
 {
-    public class EntityNotFoundException(string message) : Exception(message)
-    {
-    }
 }

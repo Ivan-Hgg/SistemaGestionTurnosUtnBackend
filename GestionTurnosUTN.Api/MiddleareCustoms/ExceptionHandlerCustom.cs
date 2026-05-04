@@ -1,4 +1,4 @@
-﻿using Dsw2025Tpi.Application.Exceptions;
+﻿using GestionTurnosUTN.Application.Exceptions;
 using System.Net;
 using System.Text.Json;
 
@@ -39,6 +39,7 @@ public class ExceptionHandlerCustom
             DuplicatedEntityException=> HttpStatusCode.Conflict,
             InvalidStatusTransitionException=>HttpStatusCode.BadRequest,
             DataInsertException=>HttpStatusCode.BadRequest,
+            InvalidOperationException=> HttpStatusCode.BadRequest,
             _ => HttpStatusCode.InternalServerError
         };
 

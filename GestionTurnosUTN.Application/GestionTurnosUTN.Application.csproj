@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GestionTurnosUTN.Data\GestionTurnosUTN.Data.csproj" />
     <ProjectReference Include="..\GestionTurnosUTN.Domain\GestionTurnosUTN.Domain.csproj" />
   </ItemGroup>

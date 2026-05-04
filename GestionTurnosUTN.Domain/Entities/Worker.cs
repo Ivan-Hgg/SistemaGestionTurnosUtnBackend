@@ -12,9 +12,9 @@ public class Worker : EntityBase
     public string Email { get; set; }
 
     // Navigation properties
-    public IEnumerable<Interval>? Intervals { get; set; }
-    public IEnumerable<Note>? Notes { get; set; }
-    public IEnumerable<News>? News { get; set; }
+    public ICollection<Interval>? Intervals { get; set; }
+    public ICollection<Note>? Notes { get; set; }
+    public ICollection<News>? News { get; set; }
 
     public Worker()
     {

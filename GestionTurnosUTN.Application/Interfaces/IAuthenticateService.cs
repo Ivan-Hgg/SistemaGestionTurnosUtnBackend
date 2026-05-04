@@ -1,0 +1,17 @@
+﻿using GestionTurnosUTN.Application.Dtos;
+using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GestionTurnosUTN.Application.Interfaces;
+
+public interface IAuthenticateService
+{
+    Task<RegisterModelResponse> RegisterStudentAsync(RegisterStudentModel model);
+    Task<RegisterModelResponse> RegisterWorkerAsync(RegisterWorkerModel model);
+    Task<LoginModelResponse> LoginAsync(LoginModelRequest model);
+    Task BeSupreme(Guid workerId);
+}

@@ -3,7 +3,7 @@ namespace GestionTurnosUTN.Api.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using GestionTurnosUTN.Application.Interfaces;
 using GestionTurnosUTN.Application.Dtos;
-using GestionTurnosUTN.Application.Services;
+using GestionTurnosUTN.Api.Controllers;
 
 
 [ApiController]

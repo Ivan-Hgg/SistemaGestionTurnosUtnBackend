@@ -12,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GestionTurnosUTN.Application.Services
 {
-    internal class IntervalService : IIntervalService
+    public class IntervalManagementService : IIntervalService
     {
         private readonly IRepository _repository;
         //private readonly IUnitOfWork _unitOfWork;
 
-        public IntervalService(IRepository repository /*,IUnitOfWork unitOfWork*/)
+        public IntervalManagementService(IRepository repository /*,IUnitOfWork unitOfWork*/)
         {
             _repository = repository;
             /*_unitOfWork = unitOfWork;*/

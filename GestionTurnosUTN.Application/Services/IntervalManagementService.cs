@@ -7,7 +7,6 @@ using GestionTurnosUTN.Domain.Entities;
 using GestionTurnosUTN.Application.Dtos;
 using GestionTurnosUTN.Application.Interfaces;
 using GestionTurnosUTN.Domain.Interfaces;
-using Dsw2025Tpi.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace GestionTurnosUTN.Application.Services
@@ -45,13 +44,14 @@ namespace GestionTurnosUTN.Application.Services
                 dto.DateStart,
                 dto.DateEnd,
                 dto.WorkerId,
-                notes
+                notes.ToList()
             );
 
             // 4️⃣ Guardar
             await _repository.Add(interval);
 
-            // ⚠️ IMPORTANTE: te falta esto en tu repo
+
+     
             //await _context.SaveChangesAsync(); // o UnitOfWork
 
             // 5️⃣ Mapear respuesta
